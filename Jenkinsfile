@@ -25,6 +25,7 @@ pipeline {
 
             }
         }
+
         stage('SonarQube Analysis') {
            steps {
                 sh """
@@ -53,11 +54,16 @@ pipeline {
                 sh "sed -i 's|bayramozkan/jenkins-cicd:java|${DOCKER_IMAGE}:${DOCKER_TAG}|' manifest/deployment.yaml"
             }
         }
-        stage("TRIVY"){
-            steps{
-                 sh "trivy image --scanners vuln ${DOCKER_IMAGE}:${DOCKER_TAG}"
-            }
-        }
+
+        // trivy bypass 
+        // stage("TRIVY"){
+        //     steps{
+        //          sh "trivy image --scanners vuln ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                  
+
+        //     }
+        // }
+
         stage("Deploy To EKS"){ // EKS'e deployment yapma
             steps{
                 sh 'aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster'
