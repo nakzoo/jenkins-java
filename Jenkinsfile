@@ -26,7 +26,7 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('SonarQube Analysis') { // SonarQube kod analizi
            steps {
                 sh """
                     mvn sonar:sonar \
@@ -38,7 +38,7 @@ pipeline {
             }    
         }
         
-       stage("Docker Build & Push"){ // Docker image build ve push aşaması
+       stage("Docker Build & Push"){  // Docker image build ve push aşaması
             steps{
                 script{
                    withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {                        
@@ -49,14 +49,14 @@ pipeline {
             }
         }
         
-        stage("Update Kubernetes Manifest"){ // Kubernetes manifest dosyasını güncelleme
+        stage("Update Kubernetes Manifest"){  // Kubernetes manifest dosyasını güncelleme
             steps{
                 sh "sed -i 's|bayramozkan/jenkins-cicd:java|${DOCKER_IMAGE}:${DOCKER_TAG}|' manifest/deployment.yaml"
             }
         }
 
         // trivy bypass 
-        // stage("TRIVY"){
+        // stage("TRIVY"){ // Docker image security kontrollü
         //     steps{
         //          sh "trivy image --scanners vuln ${DOCKER_IMAGE}:${DOCKER_TAG}"
                   
@@ -64,7 +64,7 @@ pipeline {
         //     }
         // }
 
-        stage("Deploy To EKS"){ // EKS'e deployment yapma
+        stage("Deploy To EKS"){  // EKS'e deployment yapma
             steps{
                 sh 'aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster'
                 sh 'kubectl apply -f manifest/deployment.yaml'
