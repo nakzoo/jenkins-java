@@ -20,7 +20,9 @@ pipeline {
         
        stage("MVN build"){ // Maven build aşaması
             steps{
-                sh "mvn clean install -Dmaven.test.skip=true"
+                // sh "mvn clean install -Dmaven.test.skip=true"
+                sh "mvn clean install -Dmaven.test.skip=true -U"
+
             }
         }
         stage('SonarQube Analysis') {
