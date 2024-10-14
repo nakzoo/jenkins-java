@@ -4,7 +4,7 @@ pipeline {
     environment{
         cred = credentials('aws-key') // AWS access key için tanımlı credential
         dockerhub_cred = credentials('docker-cred') // Docker Hub için tanımlı credential
-        DOCKER_IMAGE = "hbayraktar/petclinic"
+        DOCKER_IMAGE = "bayramozkan/jenkins-cicd:java"
         DOCKER_TAG = "$BUILD_NUMBER"
         SONARQUBE_URL = 'http://localhost:9000/'
         SONAR_TOKEN = credentials('SONAR_TOKEN')
@@ -13,7 +13,7 @@ pipeline {
         
         stage("Git Checkout"){ // Repository checkout işlemi
             steps{
-                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/hakanbayraktar/petclinic-java.git'
+                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/nakzoo/jenkins-java.git'
             }
         }
           
@@ -27,7 +27,7 @@ pipeline {
            steps {
                 sh """
                     mvn sonar:sonar \
-                    -Dsonar.projectKey=petclinic-java \
+                    -Dsonar.projectKey=jenkins-java \
                     -Dsonar.host.url=${SONARQUBE_URL} \
                     -Dsonar.login=${SONAR_TOKEN} \
                     -Dsonar.java.binaries=target/classes
@@ -48,7 +48,7 @@ pipeline {
         
         stage("Update Kubernetes Manifest"){ // Kubernetes manifest dosyasını güncelleme
             steps{
-                sh "sed -i 's|hbayraktar/petclinic:latest|${DOCKER_IMAGE}:${DOCKER_TAG}|' manifest/deployment.yaml"
+                sh "sed -i 's|bayramozkan/jenkins-cicd:java|${DOCKER_IMAGE}:${DOCKER_TAG}|' manifest/deployment.yaml"
             }
         }
         stage("TRIVY"){
