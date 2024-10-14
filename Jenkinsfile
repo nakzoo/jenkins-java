@@ -4,7 +4,7 @@ pipeline {
     environment{
         cred = credentials('aws-key') // AWS access key için tanımlı credential
         dockerhub_cred = credentials('docker-cred') // Docker Hub için tanımlı credential
-        DOCKER_IMAGE = "bayramozkan/jenkins-cicd:java"
+        DOCKER_IMAGE = "bayramozkan/jenkins-app:java"
         DOCKER_TAG = "$BUILD_NUMBER"
         SONARQUBE_URL = 'http://localhost:9000/'
         SONAR_TOKEN = credentials('SONAR_TOKEN')
@@ -50,7 +50,7 @@ pipeline {
         
         stage("Update Kubernetes Manifest"){ // Kubernetes manifest dosyasını güncelleme
             steps{
-                sh "sed -i 's|bayramozkan/jenkins-cicd:java|${DOCKER_IMAGE}:${DOCKER_TAG}|' manifest/deployment.yaml"
+                sh "sed -i 's|bayramozkan/jenkins-app:java|${DOCKER_IMAGE}:${DOCKER_TAG}|' manifest/deployment.yaml"
             }
         }
         stage("TRIVY"){

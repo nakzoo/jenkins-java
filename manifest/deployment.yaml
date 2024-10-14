@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: petclinic
-        image: bayramozkan/jenkins-cicd:java
+        image: bayramozkan/jenkins-app:java
         ports:
         - containerPort: 8000
 ---
